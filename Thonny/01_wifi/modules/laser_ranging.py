@@ -1,0 +1,29 @@
+from machine import I2C, Pin, SoftI2C
+import utime,time
+from libs.vl53l0x import VL53L0X
+import math
+
+class LaserRanging:
+    def __init__(self, gpio1 = Pin(18, Pin.IN), scl=Pin(21), sda=Pin(22), freq=100000):
+        self.value = -1
+        self.sensor = VL53L0X(SoftI2C(scl=scl, sda=sda, freq=freq))
+        gpio1.irq(trigger=Pin.IRQ_FALLING, handler=self.handle_interrupt)
+        self.received_new_data = False  
+
+    def handle_interrupt(self, pin):
+        self.received_new_data = True
+    
+    def read(self):
+        if self.received_new_data:
+            self.received_new_data = False
+            self.value = self.sensor.read()
+        return self.value
+    
+    def start(self):
+        self.sensor.start()
+        time.sleep_ms(500)
+        print("VL53L0X is ON")
+        
+        
+        
+
