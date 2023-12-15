@@ -1,0 +1,7 @@
+{
+    "cmake.configureOnOpen": true,
+    "files.associations": {
+        "iostream": "cpp"
+    },
+    "cmake.sourceDirectory": "D:/workspace/ESP32/PlatformIO/MyEsp32/MyEsp32/.pio/libdeps/esp32dev/Unity"
+}
