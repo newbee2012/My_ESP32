@@ -2,9 +2,9 @@ from machine import Pin, SoftI2C, I2C
 from libs.i2c_lcd import I2cLcd
 
 class LCD1602:
-    def __init__(self, sda = Pin(13), scl = Pin(14), freq = 100000):
+    def __init__(self, sda = 13, scl = 14, freq = 100000):
         # 定义 SoftI2C 控制对象
-        self.i2c = SoftI2C(sda = sda, scl = scl, freq = freq)
+        self.i2c = SoftI2C(sda = Pin(sda), scl = Pin(scl), freq = freq)
         # 获取 I2C 从机地址
         self.address = self.i2c.scan()[0]
         # 定义 I2CLCD 对象

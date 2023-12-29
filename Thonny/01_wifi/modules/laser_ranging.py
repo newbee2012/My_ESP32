@@ -4,9 +4,10 @@ from libs.vl53l0x import VL53L0X
 import math
 
 class LaserRanging:
-    def __init__(self, gpio1 = Pin(18, Pin.IN), scl=Pin(21), sda=Pin(22), freq=100000):
+    def __init__(self, irq=18, scl=21, sda=22, freq=100000):
         self.value = -1
-        self.sensor = VL53L0X(SoftI2C(scl=scl, sda=sda, freq=freq))
+        self.sensor = VL53L0X(SoftI2C(scl=Pin(scl), sda=Pin(sda), freq=freq))
+        gpio1 = Pin(irq, Pin.IN)
         gpio1.irq(trigger=Pin.IRQ_FALLING, handler=self.handle_interrupt)
         self.received_new_data = False  
 
