@@ -23,9 +23,8 @@ class ESP32:
         
     def setup(self):
         self.wifi.connect()
-        print(f"当前时间:{get_current_date()} {get_current_time()}")
-        sync_time_by_rtc()
-        print("正在同步时间...")
+        #sync_time_by_rtc()
+        #print("正在同步时间...")
         print(f"当前时间:{get_current_date()} {get_current_time()}")
 
 if __name__ == '__main__':

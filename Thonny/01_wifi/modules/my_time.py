@@ -9,10 +9,10 @@ def get_current_time_tuple():
     current_utc_time = utime.time()
 
     # 东八区偏移量为8小时（8 * 3600秒）
-    utc_offset = 8 * 3600
+    #utc_offset = 8 * 3600
 
     # 计算东八区的本地时间
-    eastern_time = current_utc_time + utc_offset
+    eastern_time = current_utc_time
 
     # 将UTC时间转换为元组
     local_time_tuple = utime.localtime(eastern_time)

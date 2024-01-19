@@ -1,5 +1,5 @@
 import config
-from machine import Pin, ADC
+from machine import Pin, ADC, Timer
 from modules.umqttsimple import MQTTClient
 from log import logger
 import time
@@ -7,13 +7,36 @@ import json
 from modules.my_time import *
 class AutoWateringFlowers():
     def __init__(self):
-        self.mqtt_client = MQTTClient("umqtt_client", "43.128.18.55")  # 建立一个MQTT客户端
+        self.mqtt_client = MQTTClient("esp32-c3", "43.128.18.55", keepalive=600)  # 建立一个MQTT客户端
         self.mqtt_client.set_callback(self.mqtt_handler)  # 设置回调函数
-        self.mqtt_client.connect()
-        self.mqtt_client.subscribe(b"awf_cmd")
+        self._mqtt_connect()
         self.adc = ADC(Pin(2),atten=ADC.ATTN_11DB)
         self.pinOnOff = Pin(6 , Pin.OUT, Pin.PULL_UP)
         self.pinOnOff.value(1)
+        # 定义定时器
+        self.timer = Timer(0)
+        # 初始化定时器
+        self.timer.init(period=60000, mode=Timer.PERIODIC, callback=self.timer_irq)
+    
+    def _mqtt_connect(self):
+        try:
+            if self.mqtt_client.connect() == 0:
+                logger.info(f"Successfully connected to MQTT server!")
+                self.mqtt_client.subscribe(b"awf_cmd")
+                return 0
+            else:
+                logger.info("Connected to MQTT server failed!")
+                return -1
+        except Exception as e:
+            logger.info(f"Connected to MQTT server exception! {e}")
+        return -1
+        
+    def timer_irq(self, timer_pin = None):
+        try:
+            self.mqtt_client.ping()
+            logger.info("mqtt send PINGREQ")
+        except Exception as e:
+            logger.info("Ping MQTT server exception! {e}")
         
     def mqtt_handler(self, topic, msg): # 回调函数，收到服务器消息后会调用这个函数
         # 解码为字符串
@@ -53,7 +76,9 @@ class AutoWateringFlowers():
             
     
     def querySoilMoisture(self):
-        return self.adc.read() / 4095
+        min = 1300
+        max = 4095
+        return  1 - (self.adc.read() - min) / (max - min)
 
     def startWatering(self):
         self.pinOnOff.value(0)
@@ -63,10 +88,17 @@ class AutoWateringFlowers():
         
     def run(self):
         while not config.stop_all_threads:
-            self.mqtt_client.check_msg()
-            moisture = self.adc.read() / 4095
-            logger.info(f"query current soil moisture:{moisture}")
-            time.sleep_ms(500)
+            try:
+                self.mqtt_client.check_msg()
+                time.sleep_ms(500)
+            except Exception as e:
+                logger.info(f"AutoWateringFlowers run() catch a exception {e}! Try reconnecting after 5 seconds!")
+                time.sleep_ms(5000)
+                self._mqtt_connect()
+        
+        self.timer.deinit()
+        self.mqtt_client.disconnect()
+        
             
             
             
