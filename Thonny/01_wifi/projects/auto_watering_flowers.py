@@ -7,7 +7,7 @@ import json
 from modules.my_time import *
 class AutoWateringFlowers():
     def __init__(self):
-        self.mqtt_client = MQTTClient("esp32-c3", "43.128.18.55", keepalive=600)  # 建立一个MQTT客户端
+        self.mqtt_client = MQTTClient("esp32-c3-dev", "43.128.18.55", keepalive=600)  # 建立一个MQTT客户端
         self.mqtt_client.set_callback(self.mqtt_handler)  # 设置回调函数
         self._mqtt_connect()
         self.adc = ADC(Pin(2),atten=ADC.ATTN_11DB)
@@ -78,7 +78,10 @@ class AutoWateringFlowers():
     def querySoilMoisture(self):
         min = 1300
         max = 4095
-        return  1 - (self.adc.read() - min) / (max - min)
+        read_value =  self.adc.read()
+        if read_value < min:
+            read_value = min
+        return  1 - (read_value - min) / (max - min)
 
     def startWatering(self):
         self.pinOnOff.value(0)
