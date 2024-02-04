@@ -30,12 +30,12 @@ class LD2410:
             if recv_data:
                 self.buffer.extend(recv_data)
                 self.__process_buffer()
-                frame_data = self.__get_frame()
-                if frame_data != None:
-                    self.target_status = self.__cale_target_status(frame_data)
-                    hex_string = ' '.join(f'{byte:02x}' for byte in frame_data)
-                    logger.debug(f'{hex_string}|{self.frame_queue.size()}')
-            time.sleep_ms(5)
+            frame_data = self.__get_frame()
+            if frame_data != None:
+                self.target_status = self.__cale_target_status(frame_data)
+                hex_string = ' '.join(f'{byte:02x}' for byte in frame_data)
+                logger.debug(f'{hex_string}|{self.frame_queue.size()}')
+            time.sleep_ms(20)
         logger.info("LD2410.__recvData_thread exit.")
 
     def __process_buffer(self):
@@ -62,7 +62,7 @@ class LD2410:
     
     def run(self):
         thread_recvData = _thread.start_new_thread(self.__recvData_thread, ())
-        
+
     def __cale_target_status(self, frame_data):
         if frame_data == None:
             return UNKNOWN

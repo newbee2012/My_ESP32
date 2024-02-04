@@ -13,7 +13,7 @@ protocol = {
 
 class RF315Sender():
     def __init__(self):
-        self.tx_pin = Pin(32, Pin.OUT, Pin.PULL_DOWN)
+        self.tx_pin = Pin(4, Pin.OUT, Pin.PULL_DOWN)
     
     def send_pulse(self, high, low):
         self.tx_pin.value(1 if not protocol["invertedSignal"] else 0)
