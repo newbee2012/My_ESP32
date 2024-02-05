@@ -8,9 +8,8 @@ from modules.my_time import *
 
 class AutoWateringFlowers():
     def __init__(self):
-        self.mqtt_client = MQTTClient("esp32-c3", "43.128.18.55", keepalive=600)  # 建立一个MQTT客户端
+        self.mqtt_client = MQTTClient("esp32-c3", "43.133.196.219", keepalive=600)  # 建立一个MQTT客户端
         self.mqtt_client.set_callback(self.mqtt_handler)  # 设置回调函数
-        self.mqtt_client.DEBUG = True
         self._mqtt_connect()
         self.adc = ADC(Pin(2),atten=ADC.ATTN_11DB)
         self.pinOnOff = Pin(6 , Pin.OUT, Pin.PULL_UP)
