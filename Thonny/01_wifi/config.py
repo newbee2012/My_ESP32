@@ -1,2 +1,2 @@
 stop_all_threads = False
-log_level = "INFO" 
+log_level = "INFO"

@@ -3,7 +3,7 @@ from machine import Pin, Timer
 from modules.wifi import Wifi
 from modules.umqttsimple import MQTTClient
 #from projects.elevator import Elevator
-#from projects.auto_sleeping_light import AutoSleepingLight
+from projects.auto_sleeping_light import AutoSleepingLight
 from projects.auto_watering_flowers import AutoWateringFlowers
 from machine import Pin, SPI, SoftI2C, I2C, SoftSPI
 import time
@@ -41,10 +41,10 @@ if __name__ == '__main__':
     #elevator_thread = _thread.start_new_thread(elevator.run, ())
     
     #mqtt_thread = _thread.start_new_thread(myEsp32.testMqtt, ())
-    #autoSleepingLight = AutoSleepingLight()
-    #autoSleepingLight.run()
-    autoWateringFlowers = AutoWateringFlowers()
-    autoWateringFlowers_thread = _thread.start_new_thread(autoWateringFlowers.run, ())
+    autoSleepingLight = AutoSleepingLight()
+    autoSleepingLight.run()
+    #autoWateringFlowers = AutoWateringFlowers()
+    #autoWateringFlowers_thread = _thread.start_new_thread(autoWateringFlowers.run, ())
     try:
         while True:
             time.sleep_ms(500)

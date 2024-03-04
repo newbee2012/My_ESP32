@@ -6,8 +6,8 @@ class Wifi:
         self.wlan = network.WLAN(network.STA_IF)
         self.ssid = ssid
         self.password = password
-        self.led2 = PWM(Pin(2))
-        self.led2.freq(10000)      
+        self.led2 = PWM(Pin(13))
+        self.led2.freq(10000)
         
     def led2_blink(self, ms = 1000):
         for i in range(0, ms + 1):

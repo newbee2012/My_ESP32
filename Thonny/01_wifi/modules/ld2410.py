@@ -15,7 +15,7 @@ MOTION_ENERGY_COUNTER_MIN = 0
 MOTION_ENERGY_DECAY_RATE = 50
 class LD2410:
     def __init__(self):
-        self.uart = UART(2, baudrate=115200, tx=Pin(17), rx=Pin(16))
+        self.uart = UART(1, baudrate=115200, tx=Pin(0), rx=Pin(1))
         self.motion_energy_counter = MOTION_ENERGY_COUNTER_MIN
         self.target_status = NO_TARGET
         self.buffer = bytearray()
@@ -59,7 +59,7 @@ class LD2410:
     
     def getTargetStatus(self):
         return self.target_status;
-    
+
     def run(self):
         thread_recvData = _thread.start_new_thread(self.__recvData_thread, ())
 
