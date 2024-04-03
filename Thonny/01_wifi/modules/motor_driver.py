@@ -1,13 +1,13 @@
 from machine import Pin, PWM
 import utime
-
+from log import logger
 class Motor():
     STOPED = 0
     FOREWARD = 1
     REVERSELY = 2
     BREAKING= 3
 
-    def __init__(self, pin_a1 = Pin(21, Pin.OUT), pin_a2 = Pin(22, Pin.OUT)):
+    def __init__(self, pin_a1 = Pin(3, Pin.OUT), pin_a2 = Pin(6, Pin.OUT)):
         self.pin_a1 = pin_a1
         self.pin_a2 = pin_a2
         self.pin_a1.value(0)
@@ -31,7 +31,7 @@ class Motor():
                 utime.sleep_ms(200)
             self.pin_a1.value(1)
             self.pin_a2.value(0)
-            print("电机正转")
+            logger.debug("电机正转")
         
     def rotate_reversely(self):
         if self.status() != Motor.REVERSELY:
@@ -40,19 +40,19 @@ class Motor():
                 utime.sleep_ms(200)
             self.pin_a1.value(0)
             self.pin_a2.value(1)
-            print("电机反转")
+            logger.debug("电机反转")
         
     def brake(self):
         if self.status() == Motor.FOREWARD or self.status() == Motor.REVERSELY:
             self.pin_a1.value(1)
             self.pin_a2.value(1)
-            print("电机刹车")
+            logger.debug("电机刹车")
         
     def stop(self):
         if self.status() != Motor.STOPED:
             self.pin_a1.value(0)
             self.pin_a2.value(0)
-            print("电机停止")
+            logger.debug("电机停止")
         
         
         

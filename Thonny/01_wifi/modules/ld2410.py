@@ -49,7 +49,7 @@ class LD2410:
                 # Frame end not found
                 break
             # Extract and enqueue the frame
-            frame = self.buffer[start_index : end_index + len(self.frame_start)]
+            frame = self.buffer[start_index : end_index + len(self.frame_end)]
             self.frame_queue.push(frame)
             # Remove processed data from the buffer
             self.buffer = self.buffer[end_index + len(self.frame_end):]

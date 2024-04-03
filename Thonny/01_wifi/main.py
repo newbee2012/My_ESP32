@@ -2,7 +2,7 @@ import config
 from machine import Pin, Timer
 from modules.wifi import Wifi
 from modules.umqttsimple import MQTTClient
-#from projects.elevator import Elevator
+from projects.elevator import Elevator
 from projects.auto_sleeping_light import AutoSleepingLight
 from projects.auto_watering_flowers import AutoWateringFlowers
 from machine import Pin, SPI, SoftI2C, I2C, SoftSPI
@@ -37,12 +37,12 @@ if __name__ == '__main__':
 #     # 初始化定时器
 #     timer.init(period=1000, mode=Timer.PERIODIC, callback=myEsp32.timer_irq)
 
-    #elevator = Elevator()
-    #elevator_thread = _thread.start_new_thread(elevator.run, ())
+    elevator = Elevator()
+    elevator_thread = _thread.start_new_thread(elevator.run, ())
     
     #mqtt_thread = _thread.start_new_thread(myEsp32.testMqtt, ())
-    autoSleepingLight = AutoSleepingLight()
-    autoSleepingLight.run()
+    #autoSleepingLight = AutoSleepingLight()
+    #autoSleepingLight.run()
     #autoWateringFlowers = AutoWateringFlowers()
     #autoWateringFlowers_thread = _thread.start_new_thread(autoWateringFlowers.run, ())
     try:

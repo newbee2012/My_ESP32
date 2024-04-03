@@ -3,8 +3,8 @@ from machine import Pin
 
 class OnOff4x4():
     def __init__(self,
-                 row_pins_id = [19,18,5,17],
-                 col_pins_id = [16,4,2,15]):
+                 row_pins_id = [1,0],
+                 col_pins_id = [12,18,19,13]):
         self.row_pins = [Pin(id, Pin.IN, Pin.PULL_UP) for id in row_pins_id]
         self.col_pins = [Pin(id, Pin.OUT) for id in col_pins_id]
 
