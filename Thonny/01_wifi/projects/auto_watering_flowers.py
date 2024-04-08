@@ -12,8 +12,7 @@ class AutoWateringFlowers():
         self.mqtt_client.set_callback(self.mqtt_handler)  # 设置回调函数
         self._mqtt_connect()
         self.adc = ADC(Pin(2),atten=ADC.ATTN_11DB)
-        self.pinOnOff = Pin(6 , Pin.OUT, Pin.PULL_UP)
-        self.pinOnOff.value(1)
+        self.pinOnOff = Pin(6 , Pin.OUT, value = 0)
         # 定义定时器
         self.timer = Timer(0)
         # 初始化定时器
@@ -94,10 +93,10 @@ class AutoWateringFlowers():
         return  1 - (read_value - min) / (max - min)
 
     def startWatering(self):
-        self.pinOnOff.value(0)
+        self.pinOnOff.value(1)
         
     def stopWatering(self):
-        self.pinOnOff.value(1)
+        self.pinOnOff.value(0)
         
     def run(self):
         while not config.stop_all_threads:
