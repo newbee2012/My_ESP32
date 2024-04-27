@@ -3,17 +3,15 @@ from machine import Pin
 
 class OnOff4x4():
     def __init__(self,
-                 row_pins_id = [1,0],
-                 col_pins_id = [12,18,19,13]):
+                 row_pins_id = [0,1],
+                 col_pins_id = [12,8,13]):
         self.row_pins = [Pin(id, Pin.IN, Pin.PULL_UP) for id in row_pins_id]
         self.col_pins = [Pin(id, Pin.OUT) for id in col_pins_id]
 
     def read_keypad(self):
         keys = [
-            [1, 2, 3, 4],
-            [5, 6, 7, 8],
-            [9, 10, 11, 12],
-            [13, 14, 15, 16]
+            [1, 2, 3],
+            [4, 5, 6]
         ]
 
         for j, col_pin in enumerate(self.col_pins):

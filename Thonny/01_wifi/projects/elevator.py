@@ -20,7 +20,7 @@ class Elevator():
         self.matrix_4x4_press_key = 1.0
         self.target_floor = self.matrix_4x4_press_key
         self.floor = self.target_floor
-        self.allowable_floor_error = 0.05
+        self.allowable_floor_error = 0.1
         self.distance = 0
         self.press_key_event = False
         #self.lcd1602 = LCD1602(sda = Pin(13), scl = Pin(14), freq = 400000)
@@ -39,7 +39,7 @@ class Elevator():
                 self.distance = laser.read()
                 logger.debug("{:>4}mm".format(self.distance))
                 self.floor = self.__get_current_floor(self.distance)
-                time.sleep_ms(500)
+                time.sleep_ms(100)
         except KeyboardInterrupt:
             logger.info("KeyboardInterrupt (Ctrl+C) received.")
         except Exception as e:
@@ -48,7 +48,7 @@ class Elevator():
         
             
     def __matrix_8x8_display_thread(self):
-        spi = SoftSPI(sck=Pin(2), mosi=Pin(10), miso = Pin(8))
+        spi = SoftSPI(sck=Pin(2), mosi=Pin(10), miso = Pin(11))
         cs = Pin(7, Pin.OUT)
         matrix8x8 = Matrix8x8Display(spi, cs, 1)
         matrix8x8.fill(0)
@@ -132,11 +132,11 @@ class Elevator():
                     elif self.floor > self.target_floor:
                         if motor.status() != Motor.REVERSELY:
                             motor.rotate_reversely()
-                    time.sleep_ms(500)
+                    time.sleep_ms(100)
                 if self.target_floor == 1:
-                    time.sleep_ms(1800)
+                    time.sleep_ms(700)
                         
-                motor.stop()
+                motor.brake()
                 self.press_key_event = False 
             time.sleep_ms(500)
             

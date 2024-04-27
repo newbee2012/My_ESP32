@@ -37,14 +37,15 @@ if __name__ == '__main__':
 #     # 初始化定时器
 #     timer.init(period=1000, mode=Timer.PERIODIC, callback=myEsp32.timer_irq)
 
-    #elevator = Elevator()
-    #elevator_thread = _thread.start_new_thread(elevator.run, ())
+    elevator = Elevator()
+    elevator_thread = _thread.start_new_thread(elevator.run, ())
     
     #mqtt_thread = _thread.start_new_thread(myEsp32.testMqtt, ())
-    #autoSleepingLight = AutoSleepingLight()
+    #autoSleepingLight = Au1toSleepingLight()
     #autoSleepingLight.run()
-    autoWateringFlowers = AutoWateringFlowers()
-    autoWateringFlowers_thread = _thread.start_new_thread(autoWateringFlowers.run, ())
+    #autoWateringFlowers = AutoWateringFlowers()
+    #autoWateringFlowers_thread = _thread.start_new_thread(autoWateringFlowers.run, ())
+
     try:
         while True:
             time.sleep_ms(500)
