@@ -23,6 +23,7 @@ class ESP32:
         
     def setup(self):
         self.wifi.connect()
+        thread_id = _thread.start_new_thread(self.wifi.checkAndKeepConnect, ())
         #sync_time_by_rtc()
         #print("正在同步时间...")
         print(f"当前时间:{get_current_date()} {get_current_time()}")
@@ -37,15 +38,14 @@ if __name__ == '__main__':
 #     # 初始化定时器
 #     timer.init(period=1000, mode=Timer.PERIODIC, callback=myEsp32.timer_irq)
 
-    elevator = Elevator()
-    elevator_thread = _thread.start_new_thread(elevator.run, ())
+    #elevator = Elevator()
+    #elevator_thread = _thread.start_new_thread(elevator.run, ())
     
     #mqtt_thread = _thread.start_new_thread(myEsp32.testMqtt, ())
-    #autoSleepingLight = Au1toSleepingLight()
+    #autoSleepingLight = AutoSleepingLight()
     #autoSleepingLight.run()
-    #autoWateringFlowers = AutoWateringFlowers()
-    #autoWateringFlowers_thread = _thread.start_new_thread(autoWateringFlowers.run, ())
-
+    autoWateringFlowers = AutoWateringFlowers()
+    autoWateringFlowers_thread = _thread.start_new_thread(autoWateringFlowers.run, ())
     try:
         while True:
             time.sleep_ms(500)

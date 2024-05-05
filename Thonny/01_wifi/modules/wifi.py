@@ -1,3 +1,4 @@
+import config
 import network
 from machine import Pin, PWM
 import time
@@ -6,8 +7,6 @@ class Wifi:
         self.wlan = network.WLAN(network.STA_IF)
         self.ssid = ssid
         self.password = password
-        self.led2 = PWM(Pin(13))
-        self.led2.freq(10000)
         
     def led2_blink(self, ms = 1000):
         for i in range(0, ms + 1):
@@ -18,15 +17,21 @@ class Wifi:
             time.sleep_ms(1)
         
     def connect(self):
+        self.led2 = PWM(Pin(13))
+        self.led2.freq(10000)
         print("self.wlan.isconnected() = {}".format(self.wlan.isconnected()))
         if not self.wlan.isconnected():
             if not self.wlan.active():
                 self.wlan.active(True)
             print('connecting to network...')
-            self.wlan.connect(self.ssid, self.password)
-            timeout = 20
+
+            timeout = 864000
             t = 0
             while not self.wlan.isconnected():
+                try:
+                    self.wlan.connect(self.ssid, self.password)
+                except Exception:
+                    print("Wifi connect error!")
                 if t >= timeout:
                     print("Connect network timeout!")
                     break
@@ -41,7 +46,15 @@ class Wifi:
                 print("Failed to connect to the network!")
         print('network config:', self.wlan.ifconfig())
         self.led2.deinit()
-        
+
+    def checkAndKeepConnect(self):
+        while not config.stop_all_threads:
+            if not self.wlan.isconnected():
+                print('Wifi is not connected!Try reconnecting after 1 seconds!')
+                time.sleep_ms(1000)
+                self.connect()
+            time.sleep_ms(5000)
+
     def disconnect(self):
         if self.wlan.isconnected():
             print('Disconnecting network...')

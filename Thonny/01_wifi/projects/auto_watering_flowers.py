@@ -45,7 +45,9 @@ class AutoWateringFlowers():
             self.mqtt_client.ping()
             logger.info("mqtt send PINGREQ")
         except Exception as e:
-            logger.info(f"Ping MQTT server exception! {e}")
+            logger.info(f"Ping MQTT server exception! {e}!Try reconnecting after 5 seconds!")
+            time.sleep_ms(5000)
+            self._mqtt_reconnect()
         
     def mqtt_handler(self, topic, msg): # 回调函数，收到服务器消息后会调用这个函数
         # 解码为字符串
