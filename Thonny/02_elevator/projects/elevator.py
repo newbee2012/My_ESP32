@@ -22,7 +22,6 @@ class Elevator():
         self.allowable_floor_error = 0.1
         self.distance = 0
         self.press_key_event = False
-        #self.lcd1602 = LCD1602(sda = Pin(13), scl = Pin(14), freq = 400000)
         
     def __vl53l0x_thread(self):
         try:
