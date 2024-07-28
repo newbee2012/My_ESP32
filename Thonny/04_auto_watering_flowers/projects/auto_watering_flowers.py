@@ -8,7 +8,11 @@ from modules.my_time import *
 
 class AutoWateringFlowers():
     def __init__(self):
-        self.mqtt_client = MQTTClient("esp32-c3", "43.130.239.227", keepalive=600)  # 建立一个MQTT客户端
+        self.device_id = "2"
+        self.mqtt_topic_cmd = f"awf_cmd_{self.device_id}"
+        print(self.mqtt_topic_cmd)
+        self.mqtt_topic_data = f"awf_data_{self.device_id}"
+        self.mqtt_client = MQTTClient(f"esp32-c3-{self.device_id}", "43.130.239.227", keepalive=600)  # 建立一个MQTT客户端
         self.mqtt_client.set_callback(self.mqtt_handler)  # 设置回调函数
         self._mqtt_connect()
         self.adc = ADC(Pin(2),atten=ADC.ATTN_11DB)
@@ -22,7 +26,7 @@ class AutoWateringFlowers():
         try:
             if self.mqtt_client.connect() == 0:
                 logger.info(f"Successfully connected to MQTT server!")
-                self.mqtt_client.subscribe(b"awf_cmd")
+                self.mqtt_client.subscribe(self.mqtt_topic_cmd.encode('utf-8'))
                 return 0
             else:
                 logger.info("Connected to MQTT server failed!")
@@ -48,6 +52,9 @@ class AutoWateringFlowers():
             logger.info(f"Ping MQTT server exception! {e}!Try reconnecting after 5 seconds!")
             time.sleep_ms(5000)
             self._mqtt_reconnect()
+    
+    def mqtt_pushlish(self, data):
+        self.mqtt_client.publish(self.mqtt_topic_data.encode('utf-8'), data)
         
     def mqtt_handler(self, topic, msg): # 回调函数，收到服务器消息后会调用这个函数
         # 解码为字符串
@@ -58,6 +65,7 @@ class AutoWateringFlowers():
         logger.info(f"MQTT recv data:\n{json_data}")
         cmd = json_data['cmd']
         data = {
+            "deivce_id":self.device_id,
             "type":cmd,
             "result":""
         }
@@ -67,7 +75,7 @@ class AutoWateringFlowers():
             logger.info(f"query current soil moisture:{moisture}")
             data['result'] = moisture
             data['time'] = f"{get_current_date()} {get_current_time()}"
-            self.mqtt_client.publish(b"awf_data",json.dumps(data))
+            self.mqtt_pushlish(json.dumps(data))
         elif cmd == 'watering':
             second = json_data['second']
             ts = 0
@@ -75,7 +83,7 @@ class AutoWateringFlowers():
             logger.info(f"Start watering...{second} seconds")
             data['result'] = "start"
             data['time'] = f"{get_current_date()} {get_current_time()}"
-            self.mqtt_client.publish(b"awf_data",json.dumps(data))
+            self.mqtt_pushlish(json.dumps(data))
             while ts < second:
                 time.sleep(1)
                 ts = ts + 1
@@ -83,7 +91,7 @@ class AutoWateringFlowers():
             logger.info(f"Stop watering...")
             data['result'] = "stop"
             data['time'] = f"{get_current_date()} {get_current_time()}"
-            self.mqtt_client.publish(b"awf_data",json.dumps(data))
+            self.mqtt_pushlish(json.dumps(data))
             
     
     def querySoilMoisture(self):
