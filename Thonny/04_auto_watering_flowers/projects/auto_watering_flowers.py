@@ -8,7 +8,7 @@ from modules.my_time import *
 
 class AutoWateringFlowers():
     def __init__(self):
-        self.device_id = "2"
+        self.device_id = "01"
         self.mqtt_topic_cmd = f"awf_cmd_{self.device_id}"
         self.mqtt_topic_data = f"awf_data_{self.device_id}"
         self.mqtt_client = MQTTClient(f"esp32-c3-{self.device_id}", "43.130.239.227", keepalive=600)  # 建立一个MQTT客户端
@@ -94,7 +94,7 @@ class AutoWateringFlowers():
             
     
     def querySoilMoisture(self):
-        min = 1300
+        min = 680
         max = 4095
         read_value =  self.adc.read()
         if read_value < min:
