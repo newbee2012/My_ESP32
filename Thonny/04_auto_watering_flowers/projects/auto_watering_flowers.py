@@ -10,7 +10,6 @@ class AutoWateringFlowers():
     def __init__(self):
         self.device_id = "2"
         self.mqtt_topic_cmd = f"awf_cmd_{self.device_id}"
-        print(self.mqtt_topic_cmd)
         self.mqtt_topic_data = f"awf_data_{self.device_id}"
         self.mqtt_client = MQTTClient(f"esp32-c3-{self.device_id}", "43.130.239.227", keepalive=600)  # 建立一个MQTT客户端
         self.mqtt_client.set_callback(self.mqtt_handler)  # 设置回调函数
