@@ -15,7 +15,8 @@ class AutoWateringFlowers():
         self.mqtt_client.set_callback(self.mqtt_handler)  # 设置回调函数
         self._mqtt_connect()
         self.adc = ADC(Pin(2),atten=ADC.ATTN_11DB)
-        self.pinOnOff = Pin(6 , Pin.OUT, value = 0)
+        self.pinOnOff1 = Pin(10, Pin.OUT, value = 0)
+        self.pinOnOff2 = Pin(7, Pin.OUT, value = 0)
         # 定义定时器
         self.timer = Timer(0)
         # 初始化定时器
@@ -76,21 +77,29 @@ class AutoWateringFlowers():
             data['time'] = f"{get_current_date()} {get_current_time()}"
             self.mqtt_pushlish(json.dumps(data))
         elif cmd == 'watering':
-            second = json_data['second']
-            ts = 0
-            self.startWatering()
-            logger.info(f"Start watering...{second} seconds")
-            data['result'] = "start"
-            data['time'] = f"{get_current_date()} {get_current_time()}"
-            self.mqtt_pushlish(json.dumps(data))
-            while ts < second:
-                time.sleep(1)
-                ts = ts + 1
-            self.stopWatering()
-            logger.info(f"Stop watering...")
-            data['result'] = "stop"
-            data['time'] = f"{get_current_date()} {get_current_time()}"
-            self.mqtt_pushlish(json.dumps(data))
+            index = json_data['index']
+            data['index'] = index
+            if index < 1 or index > 2:
+                logger.info(f"watering error! Index out of range!")
+                data['result'] = "error"
+                data['time'] = f"{get_current_date()} {get_current_time()}"
+                self.mqtt_pushlish(json.dumps(data))
+            else:
+                second = json_data['second']
+                ts = 0
+                self.startWatering(index)
+                logger.info(f"Start watering...{second} seconds")
+                data['result'] = "start"
+                data['time'] = f"{get_current_date()} {get_current_time()}"
+                self.mqtt_pushlish(json.dumps(data))
+                while ts < second:
+                    time.sleep(1)
+                    ts = ts + 1
+                self.stopWatering(index)
+                logger.info(f"Stop watering...")
+                data['result'] = "stop"
+                data['time'] = f"{get_current_date()} {get_current_time()}"
+                self.mqtt_pushlish(json.dumps(data))
             
     
     def querySoilMoisture(self):
@@ -101,21 +110,27 @@ class AutoWateringFlowers():
             read_value = min
         return  1 - (read_value - min) / (max - min)
 
-    def startWatering(self):
-        self.pinOnOff.value(1)
+    def startWatering(self, index):
+        if index==1:
+            self.pinOnOff1.value(1)
+        elif index==2:
+            self.pinOnOff2.value(1)
         
-    def stopWatering(self):
-        self.pinOnOff.value(0)
+    def stopWatering(self, index):
+        if index==1:
+            self.pinOnOff1.value(0)
+        elif index==2:
+            self.pinOnOff2.value(0)
         
     def run(self):
         while not config.stop_all_threads:
-            try:
+            #try:
                 self.mqtt_client.check_msg()
                 time.sleep_ms(500)
-            except Exception as e:
-                logger.info(f"AutoWateringFlowers run() catch a exception {e}! Try reconnecting after 5 seconds!")
-                time.sleep_ms(5000)
-                self._mqtt_reconnect()
+            #except Exception as e:
+            #    logger.info(f"AutoWateringFlowers run() catch a exception {e}! Try reconnecting after 5 seconds!")
+            #    time.sleep_ms(5000)
+            #    self._mqtt_reconnect()
         
         self.timer.deinit()
         self.mqtt_client.disconnect()

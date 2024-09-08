@@ -18,7 +18,6 @@ class ESP32:
     def __init__(self):
         self.wifi = Wifi('Redmi_dj', 'xiaomi.com2014')
         self.stop_thread = False
-        
     def setup(self):
         self.wifi.connect()
         thread_id = _thread.start_new_thread(self.wifi.checkAndKeepConnect, ())
